@@ -15,14 +15,14 @@ public class Interpreter {
 	GraphicsContext gc;
 
 	void interpreter(String src, GraphicsContext gc) {
-
+/**/
 		System.out.println(src);
-
+/**/
 		this.gc = gc;
 		x = INIT_X;
 		y = INIT_Y;
 		direction = INIT_DIRECTION;
-
+/**
 		direction -= 45; // Right 45
 		avance(20);
 		direction -= 25; // Left 45
@@ -39,11 +39,20 @@ public class Interpreter {
 		avance(20);
 		direction -= 25;
 		avance(20);
-
+/**/
+		
+		Lexer lexer = new Lexer();
+		Parser parser = new Parser();
+		
+		try {
+			execute(parser.parser(lexer.lexer(src)));
+		} catch(Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	void avance(double longueur) {
-		System.out.println(direction + " haha");
+		// System.out.println(direction + " haha");
 		double cibleX = x + Math.sin(direction * Math.PI * 2 / 360) * longueur;
 		double cibleY = y + Math.cos(direction * Math.PI * 2 / 360) * longueur;
 		gc.strokeLine(x, y, cibleX, cibleY);
@@ -51,4 +60,50 @@ public class Interpreter {
 		y = cibleY;
 	}
 
+	private void execute(NTree tree) {
+		if(tree != null) {
+			String tokenValue = tree.getValue().toUpperCase();
+			
+			if(tokenValue.equals("REPEAT")) {
+				NTree valueTree = tree.getChild(0);
+				int count = Integer.parseInt(valueTree.getValue());
+				NTree innerTree = valueTree.getChild(0).getChild(0);
+				
+				System.out.println("REPEAT " + count);
+				
+				for(int i = 0; i < count; ++i) {
+					execute(innerTree);
+				}
+			}
+			
+			else if(tokenValue.equals("FORWARD")) {
+				NTree valueTree = tree.getChild(0);
+				int length = Integer.parseInt(valueTree.getValue());
+				
+				System.out.println("FORWARD " + length);
+				
+				avance(length);
+			}
+			
+			else if(tokenValue.equals("LEFT")) {
+				NTree valueTree = tree.getChild(0);
+				int angle = Integer.parseInt(valueTree.getValue());
+				
+				System.out.println("LEFT " + angle);
+				
+				direction -= angle;
+			}
+
+			else if(tokenValue.equals("RIGHT")) {
+				NTree valueTree = tree.getChild(0);
+				int angle = Integer.parseInt(valueTree.getValue());
+				
+				System.out.println("RIGHT " + angle);
+				
+				direction += angle;
+			}
+			
+			execute(tree.getLastChild());
+		}
+	}
 }
