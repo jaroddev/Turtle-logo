@@ -15,31 +15,12 @@ public class Interpreter {
 	GraphicsContext gc;
 
 	void interpreter(String src, GraphicsContext gc) {
-/**/
 		System.out.println(src);
-/**/
+		
 		this.gc = gc;
 		x = INIT_X;
 		y = INIT_Y;
 		direction = INIT_DIRECTION;
-/**
-		direction -= 45; // Right 45
-		avance(20);
-		direction -= 25; // Left 45
-		avance(20);
-		direction -= 25;
-		avance(20);
-		direction -= 40;
-		avance(20);
-		direction += 90;
-		avance(20);
-		direction -= 25;
-		avance(20);
-		direction -= 40;
-		avance(20);
-		direction -= 25;
-		avance(20);
-/**/
 		
 		Lexer lexer = new Lexer();
 		Parser parser = new Parser();
@@ -52,7 +33,6 @@ public class Interpreter {
 	}
 
 	void avance(double longueur) {
-		// System.out.println(direction + " haha");
 		double cibleX = x + Math.sin(direction * Math.PI * 2 / 360) * longueur;
 		double cibleY = y + Math.cos(direction * Math.PI * 2 / 360) * longueur;
 		gc.strokeLine(x, y, cibleX, cibleY);
@@ -69,7 +49,7 @@ public class Interpreter {
 				int count = Integer.parseInt(valueTree.getValue());
 				NTree innerTree = valueTree.getChild(0).getChild(0);
 				
-				System.out.println("REPEAT " + count);
+				// System.out.println("REPEAT " + count);
 				
 				for(int i = 0; i < count; ++i) {
 					execute(innerTree);
@@ -80,7 +60,7 @@ public class Interpreter {
 				NTree valueTree = tree.getChild(0);
 				int length = Integer.parseInt(valueTree.getValue());
 				
-				System.out.println("FORWARD " + length);
+				// System.out.println("FORWARD " + length);
 				
 				avance(length);
 			}
@@ -89,18 +69,18 @@ public class Interpreter {
 				NTree valueTree = tree.getChild(0);
 				int angle = Integer.parseInt(valueTree.getValue());
 				
-				System.out.println("LEFT " + angle);
+				// System.out.println("LEFT " + angle);
 				
-				direction -= angle;
+				direction += angle;
 			}
 
 			else if(tokenValue.equals("RIGHT")) {
 				NTree valueTree = tree.getChild(0);
 				int angle = Integer.parseInt(valueTree.getValue());
 				
-				System.out.println("RIGHT " + angle);
+				// System.out.println("RIGHT " + angle);
 				
-				direction += angle;
+				direction -= angle;
 			}
 			
 			execute(tree.getLastChild());
