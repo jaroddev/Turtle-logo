@@ -15,8 +15,6 @@ public class Interpreter {
 	GraphicsContext gc;
 
 	void interpreter(String src, GraphicsContext gc) throws Exception {
-		System.out.println(src);
-		
 		this.gc = gc;
 		x = INIT_X;
 		y = INIT_Y;
