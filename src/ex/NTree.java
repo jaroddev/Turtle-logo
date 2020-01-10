@@ -14,6 +14,11 @@ public class NTree {
 		value = token.getValue();
 	}
 	
+	public NTree(NTree nTree) {
+		tokenClass = nTree.getTokenClass();
+		value = nTree.getValue();
+	}
+	
 	public void add(NTree tree) {
 		children.add(tree);
 	}
@@ -66,5 +71,9 @@ public class NTree {
 		}
 		
 		return null;
+	}
+	
+	public int size() {
+		return this.children.size();
 	}
 }
