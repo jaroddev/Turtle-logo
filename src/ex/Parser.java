@@ -27,9 +27,7 @@ public class Parser {
 	}
 	
 	public NTree S() throws Exception {
-		
 		if(getTokenClass() == TokenClass.ident) {
-			
 			Token token = getToken();
 			NTree tree = new NTree(token);
 			
@@ -56,7 +54,7 @@ public class Parser {
 			return null;
 		}
 		
-		throw new Exception("Unexpected " + getTokenClass());
+		throw new Exception("Syntax Error: Unexpected token " + getToken().getValue());
 	}
 	
 	public NTree A() throws Exception {
@@ -73,7 +71,11 @@ public class Parser {
 			return tree;
 		}
 		
-		throw new Exception("Unexpected " + getTokenClass());
+		else if(isEOF()) {
+			throw new Exception("Syntax Error: Unexpected end of input, expected int value");
+		}
+		
+		throw new Exception("Syntax Error: Unexpected token " + getToken().getValue() + ", expected int value");
 	}
 	
 	public NTree B() throws Exception {
@@ -99,6 +101,14 @@ public class Parser {
 				
 				return tree;
 			}
+			
+			else {
+				if(isEOF()) {
+					throw new Exception("Syntax Error: Unexpected end of input, expected ]");
+				}
+				
+				throw new Exception("Syntax Error: Unexpected token " + getToken().getValue() + ", expected ]");
+			}
 		}
 		
 		else if(getTokenClass() == TokenClass.rightBracket) {
@@ -109,14 +119,10 @@ public class Parser {
 			return null;
 		}
 		
-		throw new Exception("Unexpected " + getTokenClass());
+		throw new Exception("Syntax Error: Unexpected token " + getToken().getValue());
 	}
 	
 	public NTree parser(List<Token> tokens) throws Exception {
-		if(tokens == null) {
-			throw new Exception("Lexical Error");
-		}
-		
 		this.tokens = tokens;
 		pos = 0;
 		

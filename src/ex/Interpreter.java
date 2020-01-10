@@ -14,7 +14,7 @@ public class Interpreter {
 
 	GraphicsContext gc;
 
-	void interpreter(String src, GraphicsContext gc) {
+	void interpreter(String src, GraphicsContext gc) throws Exception {
 		System.out.println(src);
 		
 		this.gc = gc;
@@ -25,11 +25,7 @@ public class Interpreter {
 		Lexer lexer = new Lexer();
 		Parser parser = new Parser();
 		
-		try {
-			execute(parser.parser(lexer.lexer(src)));
-		} catch(Exception e) {
-			System.out.println(e);
-		}
+		execute(parser.parser(lexer.lexer(src)));
 	}
 
 	void avance(double longueur) {
@@ -40,16 +36,41 @@ public class Interpreter {
 		y = cibleY;
 	}
 
-	private void execute(NTree tree) {
+	private void execute(NTree tree) throws Exception {
 		if(tree != null) {
 			String tokenValue = tree.getValue().toUpperCase();
 			
 			if(tokenValue.equals("REPEAT")) {
 				NTree valueTree = tree.getChild(0);
 				int count = Integer.parseInt(valueTree.getValue());
-				NTree innerTree = valueTree.getChild(0).getChild(0);
 				
-				// System.out.println("REPEAT " + count);
+				// Brackets
+				
+				NTree innerTree = null;
+				
+				if(valueTree.size() > 0) {
+					innerTree = valueTree.getChild(0).getChild(0);
+				}
+				
+				/* Doesn't work with successive repeat instructions *
+				
+				// Repeat single instruction following the repeat identifier.
+				
+				else if(tree.size() > 1) {
+					innerTree = new NTree(tree.getChild(1));
+					innerTree.add(new NTree(tree.getChild(1).getChild(0)));
+					
+					// Instruction to repeat, the next instruction will follow it
+					
+					tree = tree.getChild(1);
+				}
+				
+				/*  */
+				
+				else {
+					// throw new Exception("Error: Nothing to repeat");
+					throw new Exception("Error: Repeat requires square brackets");
+				}
 				
 				for(int i = 0; i < count; ++i) {
 					execute(innerTree);
@@ -60,7 +81,9 @@ public class Interpreter {
 				NTree valueTree = tree.getChild(0);
 				int length = Integer.parseInt(valueTree.getValue());
 				
-				// System.out.println("FORWARD " + length);
+				if(valueTree.size() > 0) {
+					throw new Exception("Error: Unexpected " + valueTree.getChild(0).getValue());
+				}
 				
 				avance(length);
 			}
@@ -68,19 +91,25 @@ public class Interpreter {
 			else if(tokenValue.equals("LEFT")) {
 				NTree valueTree = tree.getChild(0);
 				int angle = Integer.parseInt(valueTree.getValue());
-				
-				// System.out.println("LEFT " + angle);
+
+				if(valueTree.size() > 0) {
+					throw new Exception("Error: Unexpected " + valueTree.getChild(0).getValue());
+				}
 				
 				direction += angle;
 			}
-
+			
 			else if(tokenValue.equals("RIGHT")) {
 				NTree valueTree = tree.getChild(0);
 				int angle = Integer.parseInt(valueTree.getValue());
-				
-				// System.out.println("RIGHT " + angle);
+
+				if(valueTree.size() > 0) {
+					throw new Exception("Error: Unexpected " + valueTree.getChild(0).getValue());
+				}
 				
 				direction -= angle;
+			} else if(tree.getTokenClass() == TokenClass.ident) {
+				throw new Exception("Error: Unknown instruction " + tree.getValue());
 			}
 			
 			execute(tree.getLastChild());

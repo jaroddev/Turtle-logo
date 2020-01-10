@@ -35,8 +35,10 @@ public class Lexer {
 		}
 	}
 
-	public List<Token> lexer(String input) {
+	public List<Token> lexer(String input) throws Exception {
 		if(input == null) {return null;}
+		
+		// Delimits ending identifiers or int values
 		
 		input += " ";
 		
@@ -55,7 +57,7 @@ public class Lexer {
 			// Error: transition not specified.
 			
 			if(nextState == null) {
-				return null;
+				throw new Exception("Lexical Error: Unexpected symbol " + c);
 			}
 			
 			state = (int)nextState;

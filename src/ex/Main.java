@@ -1,5 +1,7 @@
 package ex;
 
+import javax.swing.JOptionPane;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -44,7 +46,12 @@ public class Main extends Application {
                 @Override
                 public void handle(ActionEvent actionEvent) {
                     gc.clearRect(0, 0, WIDTH, HEIGHT);
-                    interpreter.interpreter(textArea.getText(), gc);
+                    
+	                try {
+	                    interpreter.interpreter(textArea.getText(), gc);
+                    } catch(Exception e) {
+                    	JOptionPane.showMessageDialog(null, e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             }
         );
